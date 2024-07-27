@@ -12,6 +12,7 @@ type User struct {
 	Created        time.Time
 }
 
+// This interface is implemented in the main and enforces that these functions are implemented
 type UserModelInterface interface {
 	Insert(name, email, password string) error
 	Update(name, email, password string) error

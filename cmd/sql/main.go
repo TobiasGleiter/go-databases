@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/TobiasGleiter/go-databases/internal/data/models"
+	"github.com/TobiasGleiter/go-databases/internal/models"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -25,8 +25,7 @@ func main() {
 
 	db, err := openDB(*dsn)
 	if err != nil {
-		logger.Error(err.Error())
-		os.Exit(1)
+
 	}
 	defer db.Close()
 

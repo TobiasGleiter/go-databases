@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/TobiasGleiter/go-databases/internal/data/models"
+	"github.com/TobiasGleiter/go-databases/internal/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
