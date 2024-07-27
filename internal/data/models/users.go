@@ -14,4 +14,5 @@ type User struct {
 
 type UserModelInterface interface {
 	Insert(name, email, password string) error
+	Update(name, email, password string) error
 }
