@@ -7,8 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/TobiasGleiter/go-databases/internal/models"
-
+	"github.com/TobiasGleiter/go-databases/internal/data/models"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -33,7 +32,7 @@ func main() {
 
 	app := &application{
 		logger: logger,
-		users:  &models.UserModel{DB: db},
+		users:  &models.SQLUserModel{DB: db},
 	}
 
 	srv := &http.Server{
