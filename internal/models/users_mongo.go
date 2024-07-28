@@ -10,8 +10,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const testDatabase = "test"
-const usersCollection = "users"
+const (
+	testDatabase    = "test"
+	usersCollection = "users"
+)
 
 type MongoUserModel struct {
 	DB *mongo.Client

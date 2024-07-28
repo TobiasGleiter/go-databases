@@ -5,6 +5,8 @@ import (
 	"fmt"
 )
 
+type ID = int
+
 type SQLUserModel struct {
 	DB *sql.DB
 }
@@ -24,7 +26,7 @@ func (m *SQLUserModel) GetByEmail(email string) (*User, error) {
 	return &user, nil
 }
 
-// Refactor: ObjectID isn't used by sql database
+// Refactor: ObjectID isn't used by sql database, it's a mongodb thing.
 func (m *SQLUserModel) GetByObjID(id ObjectID) (*User, error) {
 	var user User
 	return &user, nil
