@@ -31,3 +31,7 @@ func (m *SQLUserModel) GetByObjID(id ObjectID) (*User, error) {
 	var user User
 	return &user, nil
 }
+
+func (m *SQLUserModel) DeleteByObjId(id ObjectID) error {
+	return nil
+}
