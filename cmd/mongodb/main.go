@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -22,7 +21,7 @@ type application struct {
 
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
-	dsn := flag.String("dsn", "mongodb://localhost:27017", "MongoDB data source name")
+	dsn := flag.String("dsn", "mongodb://localhost:27017/?retryWrites=true&w=majority", "MongoDB data source name")
 	flag.Parse()
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
@@ -32,6 +31,7 @@ func main() {
 		logger.Error(err.Error())
 		os.Exit(1)
 	}
+	defer db.Disconnect(context.TODO())
 
 	app := &application{
 		logger: logger,
@@ -55,32 +55,20 @@ func openDB(uri string) (*mongo.Client, error) {
 	serverAPI.SetStrict(false)
 	serverAPI.SetDeprecationErrors(false)
 
-	// credential := options.Credential{
-	//	AuthMechanism: "SCRAM-SHA-256",
-	// 	AuthSource: "<authenticationDb>",
-	// 	Username:   "<username>",
-	// 	Password:   "<password>",
-	// }
-
-	opts := options.Client().ApplyURI(uri) //.SetAuth(credential)
+	opts := options.Client().ApplyURI(uri)
 	opts.SetServerAPIOptions(serverAPI)
 	//opts.SetTLSConfig(&tls.Config{})
 	opts.SetConnectTimeout(10 * time.Second)
 
 	client, err := mongo.Connect(context.TODO(), opts)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	defer func() {
-		if err = client.Disconnect(context.TODO()); err != nil {
-			panic(err)
-		}
-	}()
 
 	var result bson.M
-	if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{"ping", 1}}).Decode(&result); err != nil {
-		panic(err)
+	if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{Key: "ping", Value: 1}}).Decode(&result); err != nil {
+		return nil, err
 	}
-	fmt.Println("Pinged your deployment. You successfully connected to MongoDB!")
+
 	return client, nil
 }

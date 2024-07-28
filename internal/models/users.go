@@ -2,10 +2,14 @@ package models
 
 import (
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type ObjectID = primitive.ObjectID
+
 type User struct {
-	ID             int
+	ID             ObjectID `bson:"_id"`
 	Name           string
 	Email          string
 	HashedPassword []byte
@@ -16,4 +20,6 @@ type User struct {
 type UserModelInterface interface {
 	Insert(name, email, password string) error
 	Update(name, email, password string) error
+	GetByObjID(id ObjectID) (*User, error)
+	GetByEmail(email string) (*User, error)
 }
