@@ -2,7 +2,6 @@ package models
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -20,8 +19,6 @@ type MongoUserModel struct {
 }
 
 func (m *MongoUserModel) Insert(name, email, password string) error {
-	usersCollection := m.DB.Database(testDatabase).Collection(usersCollection)
-
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 12)
 	if err != nil {
 		return err
@@ -39,6 +36,7 @@ func (m *MongoUserModel) Insert(name, email, password string) error {
 		Created:        time.Now(),
 	}
 
+	usersCollection := m.DB.Database(testDatabase).Collection(usersCollection)
 	_, err = usersCollection.InsertOne(context.TODO(), user)
 	if err != nil {
 		return err
@@ -47,18 +45,31 @@ func (m *MongoUserModel) Insert(name, email, password string) error {
 	return nil
 }
 
-func (m *MongoUserModel) Update(name, email, password string) error {
-	fmt.Println("Update user in mongodb: ", name)
+func (m *MongoUserModel) UpdateByObjId(objId ObjectID, name, email, password string) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 12)
+	if err != nil {
+		return err
+	}
+
+	update := bson.D{{Key: "$set", Value: bson.D{
+		{Key: "name", Value: name},
+		{Key: "email", Value: email},
+		{Key: "hashedpassword", Value: hashedPassword},
+	}}}
+
+	usersCollection := m.DB.Database(testDatabase).Collection(usersCollection)
+	filter := bson.D{{Key: "_id", Value: objId}}
+	_, err = usersCollection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (m *MongoUserModel) GetByObjID(objId ObjectID) (*User, error) {
 	usersCollection := m.DB.Database("test").Collection("users")
-
-	filter := bson.D{{
-		Key:   "_id",
-		Value: objId,
-	}}
+	filter := bson.D{{Key: "_id", Value: objId}}
 
 	var user User
 	err := usersCollection.FindOne(context.TODO(), filter).Decode(&user)
@@ -71,11 +82,7 @@ func (m *MongoUserModel) GetByObjID(objId ObjectID) (*User, error) {
 
 func (m *MongoUserModel) GetByEmail(email string) (*User, error) {
 	usersCollection := m.DB.Database("test").Collection("users")
-
-	filter := bson.D{{
-		Key:   "email",
-		Value: email,
-	}}
+	filter := bson.D{{Key: "email", Value: email}}
 
 	var user User
 	err := usersCollection.FindOne(context.TODO(), filter).Decode(&user)
@@ -84,4 +91,16 @@ func (m *MongoUserModel) GetByEmail(email string) (*User, error) {
 	}
 
 	return &user, nil
+}
+
+func (m *MongoUserModel) DeleteByObjId(objId ObjectID) error {
+	usersCollection := m.DB.Database(testDatabase).Collection(usersCollection)
+	filter := bson.D{{Key: "_id", Value: objId}}
+
+	_, err := usersCollection.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -47,6 +47,42 @@ func (app *application) GetUser(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func (app *application) UpdateUser(w http.ResponseWriter, r *http.Request) {
+	name := "Gleiter, Tobias"
+	email := "gleiter.tobias@gmail.com"
+	password := "pa$$word"
+
+	objId, err := primitive.ObjectIDFromHex(r.PathValue("id"))
+	if err != nil {
+		app.logger.Error(err.Error())
+		return
+	}
+
+	err = app.users.UpdateByObjId(objId, name, email, password)
+	if err != nil {
+		app.logger.Error(err.Error())
+		return
+	}
+
+	return
+}
+
+func (app *application) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	objId, err := primitive.ObjectIDFromHex(r.PathValue("id"))
+	if err != nil {
+		app.logger.Error(err.Error())
+		return
+	}
+
+	err = app.users.DeleteByObjId(objId)
+	if err != nil {
+		app.logger.Error(err.Error())
+		return
+	}
+
+	return
+}
+
 func (app *application) userExists(email string) error {
 	_, err := app.users.GetByEmail(email)
 	if err == nil {

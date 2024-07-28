@@ -19,7 +19,8 @@ type User struct {
 // This interface is implemented in the main and enforces that these functions are implemented
 type UserModelInterface interface {
 	Insert(name, email, password string) error
-	Update(name, email, password string) error
-	GetByObjID(id ObjectID) (*User, error)
 	GetByEmail(email string) (*User, error)
+	GetByObjID(objId ObjectID) (*User, error)
+	UpdateByObjId(objId ObjectID, name, email, password string) error
+	DeleteByObjId(objId ObjectID) error
 }
