@@ -45,7 +45,7 @@ func (m *MongoUserModel) Insert(name, email, password string) error {
 	return nil
 }
 
-func (m *MongoUserModel) UpdateByObjId(objId ObjectID, name, email, password string) error {
+func (m *MongoUserModel) Update(objId ObjectID, name, email, password string) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 12)
 	if err != nil {
 		return err
