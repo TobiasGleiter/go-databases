@@ -16,7 +16,7 @@ func (m *SQLUserModel) Insert(name, email string, password string) error {
 	return nil
 }
 
-func (m *SQLUserModel) Update(id ObjectID, name, email, password string) error {
+func (m *SQLUserModel) UpdateByObjId(id ObjectID, name, email, password string) error {
 	fmt.Println("Update user in sql database: ", name)
 	return nil
 }

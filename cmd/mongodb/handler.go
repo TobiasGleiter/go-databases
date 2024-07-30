@@ -58,7 +58,7 @@ func (app *application) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = app.users.Update(objId, name, email, password)
+	err = app.users.UpdateByObjId(objId, name, email, password)
 	if err != nil {
 		app.logger.Error(err.Error())
 		return

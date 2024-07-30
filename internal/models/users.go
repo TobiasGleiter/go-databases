@@ -21,6 +21,6 @@ type UserModelInterface interface {
 	Insert(name, email, password string) error
 	GetByEmail(email string) (*User, error)
 	GetByObjID(objId ObjectID) (*User, error)
-	Update(objId ObjectID, name, email, password string) error
+	UpdateByObjId(objId ObjectID, name, email, password string) error
 	DeleteByObjId(objId ObjectID) error
 }
