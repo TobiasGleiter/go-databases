@@ -2,6 +2,10 @@
 
 Interface and Databases in Go(lang)
 
+## Todo:
+
+- [ ] Server Configurations
+
 ## SQL Implementation
 
 - Add your development database credentials and make sure you have a mysql database running.
